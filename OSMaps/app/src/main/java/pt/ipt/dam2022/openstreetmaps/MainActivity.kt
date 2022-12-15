@@ -5,13 +5,18 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PersistableBundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.compass.CompassOverlay
 
 class MainActivity : AppCompatActivity() {
@@ -56,10 +61,48 @@ class MainActivity : AppCompatActivity() {
         compassOverlay.enableCompass()
         map.overlays.add(compassOverlay)
 
+        // define a POINT on the map
+        // Instituto Politécnico de Tomar
+        var point = GeoPoint(39.60068, -8.38967)       // 39.60199, -8.39675
+        var startMarker = Marker(map)
+        startMarker.position = point
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        map.overlays.add(startMarker)
+
+        // define a second POINT on the map
+        // Continente
+        var point2 = GeoPoint(39.60199, -8.39675)
+        var startMarker2 = Marker(map)
+        startMarker2.position = point2
+        startMarker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        map.overlays.add(startMarker2)
+
+        // draw a line between the two points
+        val geoPoints = ArrayList<GeoPoint>();
+        geoPoints.add(point)
+        geoPoints.add(point2)
+        val line = Polyline()
+        line.setPoints(geoPoints);
+        line.setOnClickListener({ polyline: Polyline, mapView: MapView, geoPoint: GeoPoint ->
+            Toast.makeText(mapView.context, "polyline with " + line.actualPoints.size + " pts was tapped", Toast.LENGTH_LONG).show()
+            false
+        });
+        map.overlays.add(line);
+
 
         Handler(Looper.getMainLooper()).postDelayed({
-          //  map.controller.setCenter(point)
+            map.controller.setCenter(point)
         }, 1000) // waits one second to center map
+    }
+
+    override fun onPause() {
+        super.onPause()
+        map.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        map.onResume()
     }
 
 
