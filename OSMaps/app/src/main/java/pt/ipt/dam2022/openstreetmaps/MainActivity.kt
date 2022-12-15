@@ -64,9 +64,15 @@ class MainActivity : AppCompatActivity() {
         // define a POINT on the map
         // Instituto Politécnico de Tomar
         var point = GeoPoint(39.60068, -8.38967)       // 39.60199, -8.39675
+        // define a 'marker' to a point
         var startMarker = Marker(map)
+        // assign the point to the marker
         startMarker.position = point
+        // tell Map that the marker is to be draw at the center of screen
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        // define the content of infoWindow
+        startMarker.infoWindow=MarkerWindow(map, this, "IPT")
+        // add the marker to the Map
         map.overlays.add(startMarker)
 
         // define a second POINT on the map
@@ -75,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         var startMarker2 = Marker(map)
         startMarker2.position = point2
         startMarker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        startMarker2.infoWindow=MarkerWindow(map,this,"Continente")
         map.overlays.add(startMarker2)
 
         // draw a line between the two points
